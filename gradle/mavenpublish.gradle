@@ -1,0 +1,56 @@
+apply plugin: "com.vanniktech.maven.publish"
+
+allprojects {
+    plugins.withId("com.vanniktech.maven.publish.base") {
+        mavenPublishing {
+            publishToMavenCentral("DEFAULT")
+            signAllPublications()
+            pomFromGradleProperties()
+        }
+    }
+
+    plugins.withId("com.vanniktech.maven.publish") {
+        mavenPublish {
+            def isRelease = isReleaseBuild()
+            def signKeyValid = !getGpgKey().isEmpty()
+
+            releaseSigningEnabled = isRelease
+
+            project.logger.warn("publish: maven: release=$isRelease, keyValid=$signKeyValid")
+
+            if (isRelease && !signKeyValid) {
+                project.logger.error("Release signing enabled, but key is empty")
+            }
+        }
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            name = 'buildLocalMaven'
+            url = file("${rootProject.buildDir}/localMaven").toURI().toString()
+        }
+    }
+}
+
+signing {
+    def key = getGpgKey()
+    def pwd = getGpgPassword()
+    if (!key.isEmpty()) {
+        useInMemoryPgpKeys(key, pwd)
+    }
+}
+
+@SuppressWarnings("GrMethodMayBeStatic")
+def isReleaseBuild() {
+    return !VERSION_NAME.contains("SNAPSHOT")
+}
+
+def getGpgKey() {
+    return hasProperty("signingKey") ? signingKey : ""
+}
+
+def getGpgPassword() {
+    return hasProperty("signingPassword") ? signingPassword : ""
+}
