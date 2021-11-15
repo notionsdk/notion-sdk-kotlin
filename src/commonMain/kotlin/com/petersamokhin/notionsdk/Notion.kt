@@ -1,6 +1,7 @@
 package com.petersamokhin.notionsdk
 
 import com.petersamokhin.notionsdk.data.NotionApiVersion
+import com.petersamokhin.notionsdk.data.model.result.NotionBlock
 import com.petersamokhin.notionsdk.data.model.result.NotionDatabaseSchema
 import com.petersamokhin.notionsdk.data.model.result.NotionDatabase
 import io.ktor.client.*
@@ -13,7 +14,7 @@ public interface Notion : Closeable {
     public fun setToken(token: String)
 
     /**
-     * @see [Notion documentation](https://developers.notion.com/reference/post-database-query)
+     * @see <a href="https://developers.notion.com/reference/post-database-query">Notion documentation</a>
      */
     public suspend fun queryDatabase(
         databaseId: String,
@@ -22,11 +23,27 @@ public interface Notion : Closeable {
     ): NotionDatabase
 
     /**
-     * @see [Notion documentation](https://developers.notion.com/reference/retrieve-a-database)
+     * @see <a href="https://developers.notion.com/reference/retrieve-a-database">Notion documentation</a>
      */
     public suspend fun retrieveDatabase(
         databaseId: String,
     ): NotionDatabaseSchema
+
+    /**
+     * @see <a href="https://developers.notion.com/reference/retrieve-a-block">Notion documentation</a>
+     */
+    public suspend fun retrieveBlock(
+        blockId: String,
+    ): NotionBlock
+
+    /**
+     * @see <a href="https://developers.notion.com/reference/get-block-children">Notion documentation</a>
+     */
+    public suspend fun retrieveBlockChildren(
+        blockId: String,
+        startCursor: String? = null,
+        pageSize: Int? = null,
+    ): List<NotionBlock>
 
     public companion object {
         public const val HEADER_VERSION: String = "Notion-Version"

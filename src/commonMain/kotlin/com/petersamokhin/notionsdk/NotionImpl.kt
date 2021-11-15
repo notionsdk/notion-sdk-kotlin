@@ -3,11 +3,14 @@ package com.petersamokhin.notionsdk
 import co.touchlab.stately.concurrency.AtomicReference
 import com.petersamokhin.notionsdk.data.NotionApiVersion
 import com.petersamokhin.notionsdk.data.mapper.toDomain
+import com.petersamokhin.notionsdk.data.model.internal.obj.Block
 import com.petersamokhin.notionsdk.data.model.internal.request.QueryDatabaseRequest
-import com.petersamokhin.notionsdk.data.model.internal.response.QueryDatabaseResponse
+import com.petersamokhin.notionsdk.data.model.internal.response.PageObject
+import com.petersamokhin.notionsdk.data.model.internal.response.ResultsResponse
 import com.petersamokhin.notionsdk.data.model.internal.response.RetrieveDatabaseResponse
-import com.petersamokhin.notionsdk.data.model.result.NotionDatabaseSchema
+import com.petersamokhin.notionsdk.data.model.result.NotionBlock
 import com.petersamokhin.notionsdk.data.model.result.NotionDatabase
+import com.petersamokhin.notionsdk.data.model.result.NotionDatabaseSchema
 import io.ktor.client.*
 import io.ktor.client.features.*
 import io.ktor.client.features.json.*
@@ -18,7 +21,7 @@ import io.ktor.http.*
 internal class NotionImpl(
     token: String,
     private val version: NotionApiVersion,
-    private var httpClient: HttpClient
+    private var httpClient: HttpClient,
 ) : Notion {
     private val tokenReference = AtomicReference(token)
 
@@ -55,9 +58,9 @@ internal class NotionImpl(
     override suspend fun queryDatabase(
         databaseId: String,
         startCursor: String?,
-        pageSize: Int?
+        pageSize: Int?,
     ): NotionDatabase =
-        httpClient.post<QueryDatabaseResponse>("${Notion.API_BASE_URL}/${ENDPOINT_DATABASES}/$databaseId/$PATH_QUERY") {
+        httpClient.post<ResultsResponse<PageObject>>("${Notion.API_BASE_URL}/${ENDPOINT_DATABASES}/$databaseId/$PATH_QUERY") {
             contentType(ContentType.Application.Json)
             body = QueryDatabaseRequest(
                 startCursor = startCursor,
@@ -66,13 +69,34 @@ internal class NotionImpl(
         }.toDomain()
 
     override suspend fun retrieveDatabase(
-        databaseId: String
+        databaseId: String,
     ): NotionDatabaseSchema =
         httpClient.get<RetrieveDatabaseResponse>("${Notion.API_BASE_URL}/${ENDPOINT_DATABASES}/$databaseId")
             .toDomain()
 
+    override suspend fun retrieveBlock(blockId: String): NotionBlock =
+        httpClient.get<Block>("${Notion.API_BASE_URL}/${ENDPOINT_BLOCKS}/$blockId")
+            .toDomain()
+
+    override suspend fun retrieveBlockChildren(
+        blockId: String,
+        startCursor: String?,
+        pageSize: Int?,
+    ): List<NotionBlock> =
+        httpClient.get<ResultsResponse<Block>>("${Notion.API_BASE_URL}/${ENDPOINT_BLOCKS}/$blockId/$PATH_CHILDREN") {
+            parameter(QUERY_PARAM_START_CURSOR, startCursor)
+            parameter(QUERY_PARAM_PAGE_SIZE, pageSize)
+        }.results
+            .map(Block::toDomain)
+
     companion object {
+        private const val ENDPOINT_BLOCKS = "blocks"
         private const val ENDPOINT_DATABASES = "databases"
+
         private const val PATH_QUERY = "query"
+        private const val PATH_CHILDREN = "children"
+
+        private const val QUERY_PARAM_START_CURSOR = "start_cursor"
+        private const val QUERY_PARAM_PAGE_SIZE = "page_size"
     }
 }

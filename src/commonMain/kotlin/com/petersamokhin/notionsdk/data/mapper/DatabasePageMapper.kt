@@ -1,10 +1,10 @@
 package com.petersamokhin.notionsdk.data.mapper
 
-import com.petersamokhin.notionsdk.data.model.internal.response.QueryDatabaseResponseResult
-import com.petersamokhin.notionsdk.data.model.result.NotionDatabaseRow
+import com.petersamokhin.notionsdk.data.model.internal.response.PageObject
 import com.petersamokhin.notionsdk.data.model.result.NotionDatabaseColumn
+import com.petersamokhin.notionsdk.data.model.result.NotionDatabaseRow
 
-internal fun QueryDatabaseResponseResult.Page.toDomain(): NotionDatabaseRow =
+internal fun PageObject.toDomain(): NotionDatabaseRow =
     NotionDatabaseRow(
         columns = properties.mapValues { (key, value) -> NotionDatabaseColumn(key, value.toDomain()) }
     )

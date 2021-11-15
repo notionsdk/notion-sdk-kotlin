@@ -1,91 +1,91 @@
 package com.petersamokhin.notionsdk.data.mapper
 
-import com.petersamokhin.notionsdk.data.model.internal.response.QueryDatabaseResponseResultPageProperty
+import com.petersamokhin.notionsdk.data.model.internal.response.PageProperty
 import com.petersamokhin.notionsdk.data.model.result.NotionDatabaseProperty
 
-internal fun QueryDatabaseResponseResultPageProperty.toDomain(): NotionDatabaseProperty =
+internal fun PageProperty.toDomain(): NotionDatabaseProperty =
     when (this) {
-        is QueryDatabaseResponseResultPageProperty.Title -> toDomain()
-        is QueryDatabaseResponseResultPageProperty.Text -> toDomain()
-        is QueryDatabaseResponseResultPageProperty.Number -> toDomain()
-        is QueryDatabaseResponseResultPageProperty.Select -> toDomain()
-        is QueryDatabaseResponseResultPageProperty.MultiSelect -> toDomain()
-        is QueryDatabaseResponseResultPageProperty.Date -> toDomain()
-        is QueryDatabaseResponseResultPageProperty.People -> toDomain()
-        is QueryDatabaseResponseResultPageProperty.Files -> toDomain()
-        is QueryDatabaseResponseResultPageProperty.Checkbox -> toDomain()
-        is QueryDatabaseResponseResultPageProperty.Url -> toDomain()
-        is QueryDatabaseResponseResultPageProperty.Email -> toDomain()
-        is QueryDatabaseResponseResultPageProperty.PhoneNumber -> toDomain()
-        is QueryDatabaseResponseResultPageProperty.Formula -> toDomain()
-        is QueryDatabaseResponseResultPageProperty.Relation -> toDomain()
-        is QueryDatabaseResponseResultPageProperty.CreatedTime -> toDomain()
-        is QueryDatabaseResponseResultPageProperty.LastEditedTime -> toDomain()
-        is QueryDatabaseResponseResultPageProperty.CreatedBy -> toDomain()
-        is QueryDatabaseResponseResultPageProperty.LastEditedBy -> toDomain()
-        is QueryDatabaseResponseResultPageProperty.Rollup -> toDomain()
+        is PageProperty.Title -> toDomain()
+        is PageProperty.Text -> toDomain()
+        is PageProperty.Number -> toDomain()
+        is PageProperty.Select -> toDomain()
+        is PageProperty.MultiSelect -> toDomain()
+        is PageProperty.Date -> toDomain()
+        is PageProperty.People -> toDomain()
+        is PageProperty.Files -> toDomain()
+        is PageProperty.Checkbox -> toDomain()
+        is PageProperty.Url -> toDomain()
+        is PageProperty.Email -> toDomain()
+        is PageProperty.PhoneNumber -> toDomain()
+        is PageProperty.Formula -> toDomain()
+        is PageProperty.Relation -> toDomain()
+        is PageProperty.CreatedTime -> toDomain()
+        is PageProperty.LastEditedTime -> toDomain()
+        is PageProperty.CreatedBy -> toDomain()
+        is PageProperty.LastEditedBy -> toDomain()
+        is PageProperty.Rollup -> toDomain()
     }
 
-internal fun QueryDatabaseResponseResultPageProperty.Title.toDomain(): NotionDatabaseProperty.Title =
+internal fun PageProperty.Title.toDomain(): NotionDatabaseProperty.Title =
     NotionDatabaseProperty.Title(
         id = id,
         text = plainText()
     )
 
-internal fun QueryDatabaseResponseResultPageProperty.Text.toDomain(): NotionDatabaseProperty.Text =
+internal fun PageProperty.Text.toDomain(): NotionDatabaseProperty.Text =
     NotionDatabaseProperty.Text(
         id = id,
         text = plainText(),
         parts = richText.map { NotionDatabaseProperty.Text.Part(it.plainText, it.href) }
     )
 
-internal fun QueryDatabaseResponseResultPageProperty.Number.toDomain(): NotionDatabaseProperty.Number =
+internal fun PageProperty.Number.toDomain(): NotionDatabaseProperty.Number =
     NotionDatabaseProperty.Number(
         id = id,
         number = number
     )
 
-internal fun QueryDatabaseResponseResultPageProperty.Select.toDomain(): NotionDatabaseProperty.Select =
+internal fun PageProperty.Select.toDomain(): NotionDatabaseProperty.Select =
     NotionDatabaseProperty.Select(
         id = id,
         selected = select?.toDomain()
     )
 
-internal fun QueryDatabaseResponseResultPageProperty.Select.Value.toDomain(): NotionDatabaseProperty.Select.Option =
+internal fun PageProperty.Select.Value.toDomain(): NotionDatabaseProperty.Select.Option =
     NotionDatabaseProperty.Select.Option(
         id = id,
         name = name
     )
 
-internal fun QueryDatabaseResponseResultPageProperty.MultiSelect.toDomain(): NotionDatabaseProperty.MultiSelect =
+internal fun PageProperty.MultiSelect.toDomain(): NotionDatabaseProperty.MultiSelect =
     NotionDatabaseProperty.MultiSelect(
         id = id,
-        selected = multiSelect.map(QueryDatabaseResponseResultPageProperty.Select.Value::toDomain)
+        selected = multiSelect.map(PageProperty.Select.Value::toDomain)
     )
 
-internal fun QueryDatabaseResponseResultPageProperty.Date.toDomain(): NotionDatabaseProperty.Date =
+internal fun PageProperty.Date.toDomain(): NotionDatabaseProperty.Date =
     NotionDatabaseProperty.Date(
         id = id,
         start = date?.start,
         end = date?.end
     )
 
-internal fun QueryDatabaseResponseResultPageProperty.People.toDomain(): NotionDatabaseProperty.People =
+internal fun PageProperty.People.toDomain(): NotionDatabaseProperty.People =
     NotionDatabaseProperty.People(
         id = id,
         people = people.map { value -> value.toDomain() }
     )
 
-internal fun QueryDatabaseResponseResultPageProperty.People.Value.toDomain(): NotionDatabaseProperty.People.Person =
+internal fun PageProperty.People.Value.toDomain(): NotionDatabaseProperty.People.Person =
     when (this) {
-        is QueryDatabaseResponseResultPageProperty.People.Value.Person ->
+        is PageProperty.People.Value.Person ->
             NotionDatabaseProperty.People.Person.User(
                 id = id,
                 name = name,
                 avatarUrl = avatarUrl,
                 email =  person.email
             )
-        is QueryDatabaseResponseResultPageProperty.People.Value.Bot ->
+        is PageProperty.People.Value.Bot ->
             NotionDatabaseProperty.People.Person.Bot(
                 id = id,
                 name = name,
@@ -93,19 +93,19 @@ internal fun QueryDatabaseResponseResultPageProperty.People.Value.toDomain(): No
             )
     }
 
-internal fun QueryDatabaseResponseResultPageProperty.Files.toDomain(): NotionDatabaseProperty.Files =
+internal fun PageProperty.Files.toDomain(): NotionDatabaseProperty.Files =
     NotionDatabaseProperty.Files(
         id = id,
         files = files.map { value ->
             when (value) {
-                is QueryDatabaseResponseResultPageProperty.Files.Value.External ->
+                is PageProperty.Files.Value.External ->
                     NotionDatabaseProperty.Files.Item(
                         url = value.url,
                         name = null,
                         expiryTime = null,
                         type = NotionDatabaseProperty.Files.Item.Type.External
                     )
-                is QueryDatabaseResponseResultPageProperty.Files.Value.File ->
+                is PageProperty.Files.Value.File ->
                     NotionDatabaseProperty.Files.Item(
                         url = value.file.url,
                         name = value.name,
@@ -116,71 +116,71 @@ internal fun QueryDatabaseResponseResultPageProperty.Files.toDomain(): NotionDat
         }
     )
 
-internal fun QueryDatabaseResponseResultPageProperty.Checkbox.toDomain(): NotionDatabaseProperty.Checkbox =
+internal fun PageProperty.Checkbox.toDomain(): NotionDatabaseProperty.Checkbox =
     NotionDatabaseProperty.Checkbox(
         id = id,
         selected = checkbox
     )
 
-internal fun QueryDatabaseResponseResultPageProperty.Url.toDomain(): NotionDatabaseProperty.Url =
+internal fun PageProperty.Url.toDomain(): NotionDatabaseProperty.Url =
     NotionDatabaseProperty.Url(
         id = id,
         url = url
     )
 
-internal fun QueryDatabaseResponseResultPageProperty.Email.toDomain(): NotionDatabaseProperty.Email =
+internal fun PageProperty.Email.toDomain(): NotionDatabaseProperty.Email =
     NotionDatabaseProperty.Email(
         id = id,
         email = email
     )
 
-internal fun QueryDatabaseResponseResultPageProperty.PhoneNumber.toDomain(): NotionDatabaseProperty.PhoneNumber =
+internal fun PageProperty.PhoneNumber.toDomain(): NotionDatabaseProperty.PhoneNumber =
     NotionDatabaseProperty.PhoneNumber(
         id = id,
         phoneNumber = phoneNumber
     )
 
-internal fun QueryDatabaseResponseResultPageProperty.Formula.toDomain(): NotionDatabaseProperty.Formula =
+internal fun PageProperty.Formula.toDomain(): NotionDatabaseProperty.Formula =
     NotionDatabaseProperty.Formula(
         id = id,
         formula = when (formula) {
-            is QueryDatabaseResponseResultPageProperty.Formula.Value.Str -> NotionDatabaseProperty.Formula.Item.Str(formula.string)
-            is QueryDatabaseResponseResultPageProperty.Formula.Value.Number -> NotionDatabaseProperty.Formula.Item.Number(formula.number)
-            is QueryDatabaseResponseResultPageProperty.Formula.Value.Bool -> NotionDatabaseProperty.Formula.Item.Bool(formula.boolean)
-            is QueryDatabaseResponseResultPageProperty.Formula.Value.Date -> NotionDatabaseProperty.Formula.Item.Date(formula.date)
+            is PageProperty.Formula.Value.Str -> NotionDatabaseProperty.Formula.Item.Str(formula.string)
+            is PageProperty.Formula.Value.Number -> NotionDatabaseProperty.Formula.Item.Number(formula.number)
+            is PageProperty.Formula.Value.Bool -> NotionDatabaseProperty.Formula.Item.Bool(formula.boolean)
+            is PageProperty.Formula.Value.Date -> NotionDatabaseProperty.Formula.Item.Date(formula.date)
         }
     )
 
-internal fun QueryDatabaseResponseResultPageProperty.Relation.toDomain(): NotionDatabaseProperty.Relation =
+internal fun PageProperty.Relation.toDomain(): NotionDatabaseProperty.Relation =
     NotionDatabaseProperty.Relation(
         id = id
     )
 
-internal fun QueryDatabaseResponseResultPageProperty.CreatedBy.toDomain(): NotionDatabaseProperty.CreatedBy =
+internal fun PageProperty.CreatedBy.toDomain(): NotionDatabaseProperty.CreatedBy =
     NotionDatabaseProperty.CreatedBy(
         id = id,
         createdBy = createdBy.toDomain()
     )
 
-internal fun QueryDatabaseResponseResultPageProperty.LastEditedBy.toDomain(): NotionDatabaseProperty.LastEditedBy =
+internal fun PageProperty.LastEditedBy.toDomain(): NotionDatabaseProperty.LastEditedBy =
     NotionDatabaseProperty.LastEditedBy(
         id = id,
         lastEditedBy = lastEditedBy.toDomain()
     )
 
-internal fun QueryDatabaseResponseResultPageProperty.CreatedTime.toDomain(): NotionDatabaseProperty.CreatedTime =
+internal fun PageProperty.CreatedTime.toDomain(): NotionDatabaseProperty.CreatedTime =
     NotionDatabaseProperty.CreatedTime(
         id = id,
         createdTime = createdTime
     )
 
-internal fun QueryDatabaseResponseResultPageProperty.LastEditedTime.toDomain(): NotionDatabaseProperty.LastEditedTime =
+internal fun PageProperty.LastEditedTime.toDomain(): NotionDatabaseProperty.LastEditedTime =
     NotionDatabaseProperty.LastEditedTime(
         id = id,
         lastEditedTime = lastEditedTime
     )
 
-internal fun QueryDatabaseResponseResultPageProperty.Rollup.toDomain(): NotionDatabaseProperty.Rollup =
+internal fun PageProperty.Rollup.toDomain(): NotionDatabaseProperty.Rollup =
     NotionDatabaseProperty.Rollup(
         id = id,
     )

@@ -1,7 +1,7 @@
 # Notion SDK / Kotlin Multiplatform
 ![cover](.github/img/cover.png)
 
-<p align="center">Use your Notion table as a data source</p>
+<p align="center">Use your Notion table as a data source.<br/>Export Notion pages as Markdown recursively.</p>
 
 ---
 
@@ -17,13 +17,15 @@ implementation("com.petersamokhin.notionsdk:notionsdk:$latestVersion")
 ```
 Library is published to the Maven Central repository.
 
-Latest version:  [![maven-central](https://img.shields.io/badge/Maven%20Central-0.0.1-yellowgreen?style=flat)](https://search.maven.org/search?q=g:com.petersamokhin.notionsdk)
+Latest version:  [![maven-central](https://img.shields.io/badge/Maven%20Central-0.0.2-yellowgreen?style=flat)](https://search.maven.org/search?q=g:com.petersamokhin.notionsdk)
 
 ### Supported endpoints
 - [`/databases/:id/query`](https://developers.notion.com/reference/retrieve-a-database)
 - [`/databases/:id`](https://developers.notion.com/reference/post-database-query)
+- [`/blocks/:id/children`](https://developers.notion.com/reference/retrieve-a-block)
+- [`/blocks/:id`](https://developers.notion.com/reference/get-block-children)
 
-### Example usage
+### Example usage - retrieve a database
 How to get a token and the database ID: https://developers.notion.com/docs/getting-started
 
 <img src=".github/img/table.png" width="373" height="187"/>
@@ -89,10 +91,37 @@ println(database)
 // )
 ```
 
+### Example usage - export a page as markdown
+How to get a token and the page (block) ID: https://developers.notion.com/docs/getting-started
+
+```kotlin
+val notion = Notion.fromToken(
+    token = "token",
+    httpClient = HttpClient(CIO)
+)
+
+val exporter = NotionMarkdownExporter.create()
+
+val markdown = exporter.exportRecursively(
+    blocks = notion.retrieveBlockChildren("page-id"),
+    settings = Settings(), // please read the KDocs
+    notion = notion,
+    depthLevel = 3,
+)
+```
+
+What is supported:
+- All block types which have the content returned from the API (i.e. except the table of contents, etc.).
+- Formatting
+- Indentation for the children pages embedded content
+
+What is NOT supported:
+- HTML blocks like aside (callout), summary+details (spoiler aka toggle), font colors
+- Many of other advanced blocks, they are simplified
+
 ### Purpose of the SDK
-This library is intended to help with retrieving the info from the Notion databases.<br>
+This library is intended to help with retrieving the info from the Notion databases and pages.<br>
 Mostly, this is a handy tool which covers only the specific needs if you use Notion as a convenient data source.<br>
-Thus some additional information like the text styles and some other properties are omitted.<br>
-Only properties (of all types) and the database schema is supported.<br>
+Also, it can help to migrate from Notion to any other tool by exporting the pages as Markdown.
 
 ### Feel free to contribute if you need some additional functionality

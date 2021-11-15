@@ -1,5 +1,13 @@
 # Change log
 
+Version 0.0.2 *(2021-11-15)*
+----------------------------
+
+* [`/blocks/:id/children`](https://developers.notion.com/reference/retrieve-a-block) endpoint support
+* [`/blocks/:id`](https://developers.notion.com/reference/get-block-children) endpoint support
+* Add blocks to markdown exporter
+* Bump dependencies
+
 Version 0.0.1 *(2021-09-08)*
 ----------------------------
 

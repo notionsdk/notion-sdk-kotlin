@@ -1,47 +1,22 @@
 package com.petersamokhin.notionsdk.data.model.internal.response
 
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonClassDiscriminator
 
 @Serializable
-internal data class QueryDatabaseResponse(
-    val results: List<QueryDatabaseResponseResult>,
-
-    @SerialName("next_cursor")
-    val nextCursor: String? = null,
-    @SerialName("has_more")
-    val hasMore: Boolean,
-)
-
-@OptIn(ExperimentalSerializationApi::class)
-@Serializable
-@JsonClassDiscriminator("object")
-internal sealed class QueryDatabaseResponseResult {
-    @Serializable
-    @SerialName("page")
-    data class Page(
-        val id: String,
-        val url: String,
-        val properties: Map<String, QueryDatabaseResponseResultPageProperty>
-    ) : QueryDatabaseResponseResult()
-}
-
-@Serializable
-internal sealed class QueryDatabaseResponseResultPageProperty {
+internal sealed class PageProperty {
     abstract val id: String
 
     @Serializable
     @SerialName("title")
     data class Title(
         override val id: String,
-        val title: List<Value>
-    ) : QueryDatabaseResponseResultPageProperty() {
+        val title: List<Value>,
+    ) : PageProperty() {
         @Serializable
         data class Value(
             @SerialName("plain_text")
-            val plainText: String
+            val plainText: String,
         )
 
         fun plainText(): String =
@@ -53,13 +28,13 @@ internal sealed class QueryDatabaseResponseResultPageProperty {
     data class Text(
         override val id: String,
         @SerialName("rich_text")
-        val richText: List<Value>
-    ) : QueryDatabaseResponseResultPageProperty() {
+        val richText: List<Value>,
+    ) : PageProperty() {
         @Serializable
         data class Value(
             @SerialName("plain_text")
             val plainText: String,
-            val href: String?
+            val href: String?,
         )
 
         fun plainText(): String =
@@ -71,14 +46,14 @@ internal sealed class QueryDatabaseResponseResultPageProperty {
     data class Number(
         override val id: String,
         val number: Double? = null,
-    ) : QueryDatabaseResponseResultPageProperty()
+    ) : PageProperty()
 
     @Serializable
     @SerialName("select")
     data class Select(
         override val id: String,
         val select: Value? = null,
-    ) : QueryDatabaseResponseResultPageProperty() {
+    ) : PageProperty() {
         @Serializable
         data class Value(
             val id: String,
@@ -93,14 +68,14 @@ internal sealed class QueryDatabaseResponseResultPageProperty {
         override val id: String,
         @SerialName("multi_select")
         val multiSelect: List<Select.Value>,
-    ) : QueryDatabaseResponseResultPageProperty()
+    ) : PageProperty()
 
     @Serializable
     @SerialName("date")
     data class Date(
         override val id: String,
         val date: Value? = null,
-    ) : QueryDatabaseResponseResultPageProperty() {
+    ) : PageProperty() {
         @Serializable
         data class Value(
             val start: String,
@@ -113,7 +88,7 @@ internal sealed class QueryDatabaseResponseResultPageProperty {
     data class People(
         override val id: String,
         val people: List<Value>,
-    ) : QueryDatabaseResponseResultPageProperty() {
+    ) : PageProperty() {
         @Serializable
         sealed class Value {
             @Serializable
@@ -147,7 +122,7 @@ internal sealed class QueryDatabaseResponseResultPageProperty {
     data class Files(
         override val id: String,
         val files: List<Value>,
-    ) : QueryDatabaseResponseResultPageProperty() {
+    ) : PageProperty() {
         @Serializable
         sealed class Value {
             @Serializable
@@ -177,21 +152,21 @@ internal sealed class QueryDatabaseResponseResultPageProperty {
     data class Checkbox(
         override val id: String,
         val checkbox: Boolean,
-    ) : QueryDatabaseResponseResultPageProperty()
+    ) : PageProperty()
 
     @Serializable
     @SerialName("url")
     data class Url(
         override val id: String,
         val url: String? = null,
-    ) : QueryDatabaseResponseResultPageProperty()
+    ) : PageProperty()
 
     @Serializable
     @SerialName("email")
     data class Email(
         override val id: String,
         val email: String? = null,
-    ) : QueryDatabaseResponseResultPageProperty()
+    ) : PageProperty()
 
     @Serializable
     @SerialName("phone_number")
@@ -199,14 +174,14 @@ internal sealed class QueryDatabaseResponseResultPageProperty {
         override val id: String,
         @SerialName("phone_number")
         val phoneNumber: String? = null,
-    ) : QueryDatabaseResponseResultPageProperty()
+    ) : PageProperty()
 
     @Serializable
     @SerialName("formula")
     data class Formula(
         override val id: String,
         val formula: Value,
-    ) : QueryDatabaseResponseResultPageProperty() {
+    ) : PageProperty() {
         @Serializable
         sealed class Value {
             @Serializable
@@ -232,7 +207,7 @@ internal sealed class QueryDatabaseResponseResultPageProperty {
     @SerialName("relation")
     data class Relation(
         override val id: String,
-    ) : QueryDatabaseResponseResultPageProperty()
+    ) : PageProperty()
 
     @Serializable
     @SerialName("created_time")
@@ -240,7 +215,7 @@ internal sealed class QueryDatabaseResponseResultPageProperty {
         override val id: String,
         @SerialName("created_time")
         val createdTime: String,
-    ) : QueryDatabaseResponseResultPageProperty()
+    ) : PageProperty()
 
     @Serializable
     @SerialName("last_edited_time")
@@ -248,7 +223,7 @@ internal sealed class QueryDatabaseResponseResultPageProperty {
         override val id: String,
         @SerialName("last_edited_time")
         val lastEditedTime: String,
-    ) : QueryDatabaseResponseResultPageProperty()
+    ) : PageProperty()
 
     @Serializable
     @SerialName("created_by")
@@ -256,7 +231,7 @@ internal sealed class QueryDatabaseResponseResultPageProperty {
         override val id: String,
         @SerialName("created_by")
         val createdBy: People.Value.Person,
-    ) : QueryDatabaseResponseResultPageProperty()
+    ) : PageProperty()
 
     @Serializable
     @SerialName("last_edited_by")
@@ -264,9 +239,9 @@ internal sealed class QueryDatabaseResponseResultPageProperty {
         override val id: String,
         @SerialName("last_edited_by")
         val lastEditedBy: People.Value.Person,
-    ) : QueryDatabaseResponseResultPageProperty()
+    ) : PageProperty()
 
     @Serializable
     @SerialName("rollup")
-    data class Rollup(override val id: String) : QueryDatabaseResponseResultPageProperty()
+    data class Rollup(override val id: String) : PageProperty()
 }
