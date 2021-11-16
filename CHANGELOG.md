@@ -1,5 +1,11 @@
 # Change log
 
+Version 0.0.3 *(2021-11-16)*
+----------------------------
+* [`/databases/:id/query`](https://developers.notion.com/reference/retrieve-a-database) JSON query as a raw string support
+* Fix missing ID in the database rows (pages)
+* Improve some public models contract
+
 Version 0.0.2 *(2021-11-15)*
 ----------------------------
 

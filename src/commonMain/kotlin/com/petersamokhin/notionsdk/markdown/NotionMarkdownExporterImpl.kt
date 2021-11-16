@@ -76,7 +76,11 @@ internal class NotionMarkdownExporterImpl : NotionMarkdownExporter {
             if (block.hasChildren && depthLevel > 0) {
                 val blockChildren = notion.retrieveBlockChildren(block.id)
 
-                resultMarkdown += exportRecursively(blockChildren, settings, notion, depthLevel - 1, children = true) + '\n'
+                resultMarkdown += exportRecursively(blockChildren,
+                    settings,
+                    notion,
+                    depthLevel - 1,
+                    children = true) + '\n'
             }
         }
 
@@ -113,10 +117,8 @@ internal class NotionMarkdownExporterImpl : NotionMarkdownExporter {
                 "$prefix ${formattedText.toMarkdown(settings)}"
             }
             is NotionBlock.Toggle -> "> ▶ ${text.toMarkdown(settings)}"
-            // todo: https://notion.so/workspace/:id is buggy with multiple children, thus there is no url
-            is NotionBlock.ChildPage -> "### Notion page ($id): «$title»"
-            // todo: https://notion.so/workspace/:id is buggy with multiple children, thus there is no url
-            is NotionBlock.ChildDatabase -> "### Notion database ($id): «$title»"
+            is NotionBlock.ChildPage -> "### \uD83D\uDD17 [$title](https://notion.so/${id.replace("-", "")})"
+            is NotionBlock.ChildDatabase -> "### \uD83D\uDD17 [$title](https://notion.so/${id.replace("-", "")})"
             is NotionBlock.Image,
             is NotionBlock.Video,
             is NotionBlock.File,
@@ -175,8 +177,8 @@ internal class NotionMarkdownExporterImpl : NotionMarkdownExporter {
         var formattedText =
             plainText.replace(trimmedPlainText, "${modifiers}${trimmedPlainText}${modifiers.reversed()}")
 
-        if (href != null) {
-            formattedText = "[$formattedText]($href)"
+        if (url != null) {
+            formattedText = "[$formattedText]($url)"
         }
 
         return formattedText
@@ -185,7 +187,13 @@ internal class NotionMarkdownExporterImpl : NotionMarkdownExporter {
     private fun NotionRichText.forceStrikethrough(): NotionRichText =
         when (this) {
             is NotionRichText.Text -> copy(annotations = annotations.copy(strikethrough = true))
-            is NotionRichText.Mention -> copy(annotations = annotations.copy(strikethrough = true))
+            is NotionRichText.Mention -> when (this) {
+                is NotionRichText.Mention.User -> copy(annotations = annotations.copy(strikethrough = true))
+                is NotionRichText.Mention.Page -> copy(annotations = annotations.copy(strikethrough = true))
+                is NotionRichText.Mention.Database -> copy(annotations = annotations.copy(strikethrough = true))
+                is NotionRichText.Mention.Date -> copy(annotations = annotations.copy(strikethrough = true))
+                is NotionRichText.Mention.LinkPreview -> copy(annotations = annotations.copy(strikethrough = true))
+            }
             is NotionRichText.Equation -> copy(annotations = annotations.copy(strikethrough = true))
         }
 

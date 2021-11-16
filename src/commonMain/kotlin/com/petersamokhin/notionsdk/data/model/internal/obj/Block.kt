@@ -1,6 +1,5 @@
 package com.petersamokhin.notionsdk.data.model.internal.obj
 
-import com.petersamokhin.notionsdk.data.model.result.NotionRichText
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -35,7 +34,7 @@ internal sealed class Block {
 
         @Serializable
         internal data class Value(
-            val text: List<NotionRichText>,
+            val text: List<RichText>,
         )
     }
 
@@ -56,7 +55,7 @@ internal sealed class Block {
 
         @Serializable
         internal data class Value(
-            val text: List<NotionRichText>,
+            val text: List<RichText>,
             val language: String,
         )
     }
@@ -79,7 +78,7 @@ internal sealed class Block {
 
         @Serializable
         internal data class Value(
-            val text: List<NotionRichText>,
+            val text: List<RichText>,
         )
     }
 
@@ -101,7 +100,7 @@ internal sealed class Block {
 
         @Serializable
         internal data class Value(
-            val text: List<NotionRichText>,
+            val text: List<RichText>,
         )
     }
 
@@ -123,7 +122,7 @@ internal sealed class Block {
 
         @Serializable
         internal data class Value(
-            val text: List<NotionRichText>,
+            val text: List<RichText>,
         )
     }
 
@@ -145,7 +144,7 @@ internal sealed class Block {
 
         @Serializable
         internal data class Value(
-            val text: List<NotionRichText>,
+            val text: List<RichText>,
         )
     }
 
@@ -167,7 +166,7 @@ internal sealed class Block {
 
         @Serializable
         internal data class Value(
-            val text: List<NotionRichText>,
+            val text: List<RichText>,
         )
     }
 
@@ -189,7 +188,7 @@ internal sealed class Block {
 
         @Serializable
         internal data class Value(
-            val text: List<NotionRichText>,
+            val text: List<RichText>,
             val checked: Boolean,
         )
     }
@@ -211,7 +210,7 @@ internal sealed class Block {
 
         @Serializable
         internal data class Value(
-            val text: List<NotionRichText>,
+            val text: List<RichText>,
         )
     }
 
@@ -342,7 +341,7 @@ internal sealed class Block {
     ) : Block() {
         @Serializable
         internal data class Value(
-            val caption: List<NotionRichText>,
+            val caption: List<RichText>,
             val url: String,
         )
     }
@@ -364,7 +363,7 @@ internal sealed class Block {
 
         @Serializable
         internal data class Value(
-            val text: List<NotionRichText>,
+            val text: List<RichText>,
             val icon: Icon,
         ) {
             @Serializable
@@ -403,7 +402,7 @@ internal sealed class Block {
 
         @Serializable
         internal data class Value(
-            val text: List<NotionRichText>,
+            val text: List<RichText>,
         )
     }
 
@@ -516,7 +515,7 @@ internal sealed class Block {
 
 @Serializable
 internal data class BlockFileValue(
-    val caption: List<NotionRichText>,
+    val caption: List<RichText>,
     val file: FileInternal? = null,
     val external: FileExternal? = null,
 ) {

@@ -2,6 +2,7 @@ package com.petersamokhin.notionsdk.data.mapper
 
 import com.petersamokhin.notionsdk.data.model.internal.obj.Block
 import com.petersamokhin.notionsdk.data.model.internal.obj.BlockFileValue
+import com.petersamokhin.notionsdk.data.model.internal.obj.RichText
 import com.petersamokhin.notionsdk.data.model.result.NotionBlock
 import com.petersamokhin.notionsdk.data.model.result.NotionFile
 
@@ -13,7 +14,7 @@ internal fun Block.toDomain(): NotionBlock =
             createdTime = createdTime,
             lastEditedTime = lastEditedTime,
             hasChildren = hasChildren,
-            text = paragraph.text,
+            text = paragraph.text.map(RichText::toDomain),
         )
         is Block.Code -> NotionBlock.Code(
             id = id,
@@ -21,7 +22,7 @@ internal fun Block.toDomain(): NotionBlock =
             createdTime = createdTime,
             lastEditedTime = lastEditedTime,
             hasChildren = hasChildren,
-            text = code.text,
+            text = code.text.map(RichText::toDomain),
             language = code.language,
         )
         is Block.HeadingOne -> NotionBlock.HeadingOne(
@@ -30,7 +31,7 @@ internal fun Block.toDomain(): NotionBlock =
             createdTime = createdTime,
             lastEditedTime = lastEditedTime,
             hasChildren = hasChildren,
-            text = heading.text,
+            text = heading.text.map(RichText::toDomain),
         )
         is Block.HeadingTwo -> NotionBlock.HeadingTwo(
             id = id,
@@ -38,7 +39,7 @@ internal fun Block.toDomain(): NotionBlock =
             createdTime = createdTime,
             lastEditedTime = lastEditedTime,
             hasChildren = hasChildren,
-            text = heading.text,
+            text = heading.text.map(RichText::toDomain),
         )
         is Block.HeadingThree -> NotionBlock.HeadingThree(
             id = id,
@@ -46,7 +47,7 @@ internal fun Block.toDomain(): NotionBlock =
             createdTime = createdTime,
             lastEditedTime = lastEditedTime,
             hasChildren = hasChildren,
-            text = heading.text,
+            text = heading.text.map(RichText::toDomain),
         )
         is Block.BulletedListItem -> NotionBlock.BulletedListItem(
             id = id,
@@ -54,7 +55,7 @@ internal fun Block.toDomain(): NotionBlock =
             createdTime = createdTime,
             lastEditedTime = lastEditedTime,
             hasChildren = hasChildren,
-            text = bulletedListItem.text,
+            text = bulletedListItem.text.map(RichText::toDomain),
         )
         is Block.NumberedListItem -> NotionBlock.NumberedListItem(
             id = id,
@@ -62,7 +63,7 @@ internal fun Block.toDomain(): NotionBlock =
             createdTime = createdTime,
             lastEditedTime = lastEditedTime,
             hasChildren = hasChildren,
-            text = numberedListItem.text,
+            text = numberedListItem.text.map(RichText::toDomain),
         )
         is Block.ToDo -> NotionBlock.ToDo(
             id = id,
@@ -70,7 +71,7 @@ internal fun Block.toDomain(): NotionBlock =
             createdTime = createdTime,
             lastEditedTime = lastEditedTime,
             hasChildren = hasChildren,
-            text = todo.text,
+            text = todo.text.map(RichText::toDomain),
             checked = todo.checked,
         )
         is Block.Toggle -> NotionBlock.Toggle(
@@ -79,7 +80,7 @@ internal fun Block.toDomain(): NotionBlock =
             createdTime = createdTime,
             lastEditedTime = lastEditedTime,
             hasChildren = hasChildren,
-            text = toggle.text,
+            text = toggle.text.map(RichText::toDomain),
         )
         is Block.ChildPage -> NotionBlock.ChildPage(
             id = id,
@@ -142,7 +143,7 @@ internal fun Block.toDomain(): NotionBlock =
             createdTime = createdTime,
             lastEditedTime = lastEditedTime,
             hasChildren = hasChildren,
-            caption = bookmark.caption,
+            caption = bookmark.caption.map(RichText::toDomain),
             url = bookmark.url,
         )
         is Block.Callout -> NotionBlock.Callout(
@@ -151,7 +152,7 @@ internal fun Block.toDomain(): NotionBlock =
             createdTime = createdTime,
             lastEditedTime = lastEditedTime,
             hasChildren = hasChildren,
-            text = callout.text,
+            text = callout.text.map(RichText::toDomain),
             icon = callout.icon.toDomain(),
         )
         is Block.Quote -> NotionBlock.Quote(
@@ -160,7 +161,7 @@ internal fun Block.toDomain(): NotionBlock =
             createdTime = createdTime,
             lastEditedTime = lastEditedTime,
             hasChildren = hasChildren,
-            text = quote.text,
+            text = quote.text.map(RichText::toDomain),
         )
         is Block.Equation -> NotionBlock.Equation(
             id = id,

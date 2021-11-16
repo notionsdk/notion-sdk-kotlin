@@ -17,6 +17,7 @@ import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import io.ktor.http.content.*
 
 internal class NotionImpl(
     token: String,
@@ -66,6 +67,11 @@ internal class NotionImpl(
                 startCursor = startCursor,
                 pageSize = pageSize,
             )
+        }.toDomain()
+
+    override suspend fun queryDatabase(databaseId: String, jsonRequestBody: String): NotionDatabase =
+        httpClient.post<ResultsResponse<PageObject>>("${Notion.API_BASE_URL}/${ENDPOINT_DATABASES}/$databaseId/$PATH_QUERY") {
+            body = TextContent(jsonRequestBody, ContentType.Application.Json)
         }.toDomain()
 
     override suspend fun retrieveDatabase(

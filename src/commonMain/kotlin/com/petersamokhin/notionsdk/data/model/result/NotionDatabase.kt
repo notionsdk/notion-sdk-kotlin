@@ -15,6 +15,7 @@ public data class NotionDatabase(
 
 @Serializable
 public data class NotionDatabaseRow(
+    val id: String,
     val columns: Map<String, NotionDatabaseColumn>,
 )
 

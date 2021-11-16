@@ -23,6 +23,17 @@ public interface Notion : Closeable {
     ): NotionDatabase
 
     /**
+     * Notion API filter & sort params are too complicated to cover all the cases via strictly-typed models.
+     *
+     * @param jsonRequestBody Will be sent as the JSON request body.
+     * @see <a href="https://developers.notion.com/reference/post-database-query">Notion documentation</a>
+     */
+    public suspend fun queryDatabase(
+        databaseId: String,
+        jsonRequestBody: String,
+    ): NotionDatabase
+
+    /**
      * @see <a href="https://developers.notion.com/reference/retrieve-a-database">Notion documentation</a>
      */
     public suspend fun retrieveDatabase(

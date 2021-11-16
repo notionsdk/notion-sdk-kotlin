@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 public sealed class NotionRichText {
     @SerialName("plain_text")
     public abstract val plainText: String
-    public abstract val href: String?
+    public abstract val url: String?
     public abstract val type: NotionRichTextType
     public abstract val annotations: NotionRichTextAnnotations
 
@@ -16,80 +16,74 @@ public sealed class NotionRichText {
     public data class Text(
         @SerialName("plain_text")
         public override val plainText: String,
-        public override val href: String?,
+        public override val url: String?,
         public override val type: NotionRichTextType,
         public override val annotations: NotionRichTextAnnotations,
-        public val text: Value,
-    ) : NotionRichText() {
-
-        @Serializable
-        public data class Value(
-            public val content: String,
-            public val link: NotionRichTextInlineLink? = null,
-        )
-    }
+    ) : NotionRichText()
 
     @Serializable
     @SerialName("mention")
-    public data class Mention(
-        @SerialName("plain_text")
-        public override val plainText: String,
-        public override val href: String?,
-        public override val type: NotionRichTextType,
-        public override val annotations: NotionRichTextAnnotations,
-        public val mention: Value,
-    ) : NotionRichText() {
+    public sealed class Mention : NotionRichText() {
 
         @Serializable
-        public sealed class Value {
-            @Serializable
-            @SerialName("user")
-            public data class User(
-                public val user: NotionUser,
-            ) : Value()
+        @SerialName("user")
+        public data class User(
+            @SerialName("plain_text")
+            public override val plainText: String,
+            public override val url: String?,
+            public override val type: NotionRichTextType,
+            public override val annotations: NotionRichTextAnnotations,
 
-            @Serializable
-            @SerialName("page")
-            public data class Page(
-                public val page: Value,
-            ) : Value() {
+            public val user: NotionUser,
+        ) : Mention()
 
-                @Serializable
-                public data class Value(
-                    public val id: String,
-                )
-            }
+        @Serializable
+        @SerialName("page")
+        public data class Page(
+            @SerialName("plain_text")
+            public override val plainText: String,
+            public override val url: String?,
+            public override val type: NotionRichTextType,
+            public override val annotations: NotionRichTextAnnotations,
 
-            @Serializable
-            @SerialName("database")
-            public data class Database(
-                public val database: Value,
-            ) : Value() {
+            public val id: String,
+        ) : Mention()
 
-                @Serializable
-                public data class Value(
-                    public val id: String,
-                )
-            }
+        @Serializable
+        @SerialName("database")
+        public data class Database(
+            @SerialName("plain_text")
+            public override val plainText: String,
+            public override val url: String?,
+            public override val type: NotionRichTextType,
+            public override val annotations: NotionRichTextAnnotations,
 
-            @Serializable
-            @SerialName("date")
-            public data class Date(
-                public val date: Value,
-            ) : Value() {
+            public val id: String,
+        ) : Mention()
 
-                @Serializable
-                public data class Value(
-                    public val start: String? = null,
-                    public val end: String? = null,
-                )
-            }
+        @Serializable
+        @SerialName("date")
+        public data class Date(
+            @SerialName("plain_text")
+            public override val plainText: String,
+            public override val url: String?,
+            public override val type: NotionRichTextType,
+            public override val annotations: NotionRichTextAnnotations,
 
-            // todo: broken api example provided
-            @Serializable
-            @SerialName("link_preview")
-            public object LinkPreview : Value()
-        }
+            public val start: String? = null,
+            public val end: String? = null,
+        ) : Mention()
+
+        // todo: broken api example provided
+        @Serializable
+        @SerialName("link_preview")
+        public data class LinkPreview(
+            @SerialName("plain_text")
+            public override val plainText: String,
+            public override val url: String?,
+            public override val type: NotionRichTextType,
+            public override val annotations: NotionRichTextAnnotations,
+        ) : Mention()
     }
 
     @Serializable
@@ -97,24 +91,13 @@ public sealed class NotionRichText {
     public data class Equation(
         @SerialName("plain_text")
         public override val plainText: String,
-        public override val href: String?,
+        public override val url: String?,
         public override val type: NotionRichTextType,
         public override val annotations: NotionRichTextAnnotations,
 
-        public val equation: Value,
-    ) : NotionRichText() {
-
-        @Serializable
-        public data class Value(
-            public val expression: String,
-        )
-    }
+        public val expression: String,
+    ) : NotionRichText()
 }
-
-@Serializable
-public data class NotionRichTextInlineLink(
-    public val url: String,
-)
 
 @Serializable
 public enum class NotionRichTextType {

@@ -17,7 +17,7 @@ implementation("com.petersamokhin.notionsdk:notionsdk:$latestVersion")
 ```
 Library is published to the Maven Central repository.
 
-Latest version:  [![maven-central](https://img.shields.io/badge/Maven%20Central-0.0.2-yellowgreen?style=flat)](https://search.maven.org/search?q=g:com.petersamokhin.notionsdk)
+Latest version:  [![maven-central](https://img.shields.io/badge/Maven%20Central-0.0.3-yellowgreen?style=flat)](https://search.maven.org/search?q=g:com.petersamokhin.notionsdk)
 
 ### Supported endpoints
 - [`/databases/:id/query`](https://developers.notion.com/reference/retrieve-a-database)
@@ -91,7 +91,7 @@ println(database)
 // )
 ```
 
-### Example usage - export a page as markdown
+### Example usage - export a Notion page as markdown
 How to get a token and the page (block) ID: https://developers.notion.com/docs/getting-started
 
 ```kotlin
@@ -99,11 +99,16 @@ val notion = Notion.fromToken(
     token = "token",
     httpClient = HttpClient(CIO)
 )
+val blocks: List<NotionBlock> = notion.retrieveBlockChildren("page-id")
 
 val exporter = NotionMarkdownExporter.create()
 
-val markdown = exporter.exportRecursively(
-    blocks = notion.retrieveBlockChildren("page-id"),
+// the simplest way
+val markdown: String = exporter.export(blocks = blocks)
+
+// or a bit more complicated way
+val markdown: String = exporter.exportRecursively(
+    blocks = blocks,
     settings = Settings(), // please read the KDocs
     notion = notion,
     depthLevel = 3,

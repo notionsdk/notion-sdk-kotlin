@@ -6,9 +6,7 @@ import com.petersamokhin.notionsdk.data.model.result.NotionDatabase
 
 internal fun ResultsResponse<PageObject>.toDomain(): NotionDatabase =
     NotionDatabase(
-        rows = results.asSequence()
-            .map(PageObject::toDomain)
-            .toList(),
+        rows = results.map(PageObject::toDomain),
         nextCursor = nextCursor,
         hasMore = hasMore,
     )
