@@ -9,8 +9,9 @@ import com.petersamokhin.notionsdk.data.model.internal.response.PageObject
 import com.petersamokhin.notionsdk.data.model.internal.response.ResultsResponse
 import com.petersamokhin.notionsdk.data.model.internal.response.RetrieveDatabaseResponse
 import com.petersamokhin.notionsdk.data.model.result.NotionBlock
-import com.petersamokhin.notionsdk.data.model.result.NotionDatabase
+import com.petersamokhin.notionsdk.data.model.result.NotionDatabaseRow
 import com.petersamokhin.notionsdk.data.model.result.NotionDatabaseSchema
+import com.petersamokhin.notionsdk.data.model.result.NotionResults
 import io.ktor.client.*
 import io.ktor.client.features.*
 import io.ktor.client.features.json.*
@@ -60,7 +61,7 @@ internal class NotionImpl(
         databaseId: String,
         startCursor: String?,
         pageSize: Int?,
-    ): NotionDatabase =
+    ): NotionResults<NotionDatabaseRow> =
         httpClient.post<ResultsResponse<PageObject>>("${Notion.API_BASE_URL}/${ENDPOINT_DATABASES}/$databaseId/$PATH_QUERY") {
             contentType(ContentType.Application.Json)
             body = QueryDatabaseRequest(
@@ -69,7 +70,10 @@ internal class NotionImpl(
             )
         }.toDomain()
 
-    override suspend fun queryDatabase(databaseId: String, jsonRequestBody: String): NotionDatabase =
+    override suspend fun queryDatabase(
+        databaseId: String,
+        jsonRequestBody: String,
+    ): NotionResults<NotionDatabaseRow> =
         httpClient.post<ResultsResponse<PageObject>>("${Notion.API_BASE_URL}/${ENDPOINT_DATABASES}/$databaseId/$PATH_QUERY") {
             body = TextContent(jsonRequestBody, ContentType.Application.Json)
         }.toDomain()
@@ -88,12 +92,11 @@ internal class NotionImpl(
         blockId: String,
         startCursor: String?,
         pageSize: Int?,
-    ): List<NotionBlock> =
+    ): NotionResults<NotionBlock> =
         httpClient.get<ResultsResponse<Block>>("${Notion.API_BASE_URL}/${ENDPOINT_BLOCKS}/$blockId/$PATH_CHILDREN") {
             parameter(QUERY_PARAM_START_CURSOR, startCursor)
             parameter(QUERY_PARAM_PAGE_SIZE, pageSize)
-        }.results
-            .map(Block::toDomain)
+        }.toDomain()
 
     companion object {
         private const val ENDPOINT_BLOCKS = "blocks"

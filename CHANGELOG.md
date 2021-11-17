@@ -1,5 +1,11 @@
 # Change log
 
+Version 0.0.4 *(2021-11-16)*
+----------------------------
+* Fix missing pagination logic for block children endpoint
+* Fix indentation for the child pages content recursively rendered to Markdown
+* Unify list result response data model
+
 Version 0.0.3 *(2021-11-16)*
 ----------------------------
 * [`/databases/:id/query`](https://developers.notion.com/reference/retrieve-a-database) JSON query as a raw string support

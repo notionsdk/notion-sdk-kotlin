@@ -1,11 +1,12 @@
 package com.petersamokhin.notionsdk.data.model.result
 
+import com.petersamokhin.notionsdk.data.model.serializer.NotionResultsTypedSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-@Serializable
-public data class NotionDatabase(
-    val rows: List<NotionDatabaseRow>,
+@Serializable(with = NotionResultsTypedSerializer::class)
+public data class NotionResults<T>(
+    val results: List<T>,
 
     @SerialName("next_cursor")
     val nextCursor: String? = null,
@@ -35,7 +36,8 @@ public sealed class NotionDatabaseProperty {
 
     @Serializable
     @SerialName("rich_text")
-    public data class Text(override val id: String, val text: String, val parts: List<Part>) : NotionDatabaseProperty() {
+    public data class Text(override val id: String, val text: String, val parts: List<Part>) :
+        NotionDatabaseProperty() {
         @Serializable
         public data class Part(val text: String, val url: String?)
     }
@@ -48,7 +50,7 @@ public sealed class NotionDatabaseProperty {
     @SerialName("select")
     public data class Select(
         override val id: String,
-        val selected: Option?
+        val selected: Option?,
     ) : NotionDatabaseProperty() {
         @Serializable
         public data class Option(
@@ -61,7 +63,7 @@ public sealed class NotionDatabaseProperty {
     @SerialName("multi_select")
     public data class MultiSelect(
         override val id: String,
-        val selected: List<Select.Option>
+        val selected: List<Select.Option>,
     ) : NotionDatabaseProperty()
 
     @Serializable
@@ -81,7 +83,7 @@ public sealed class NotionDatabaseProperty {
                 @SerialName("avatar_url")
                 val avatarUrl: String?,
                 val email: String,
-            ): Person()
+            ) : Person()
 
             @Serializable
             @SerialName("user")
@@ -90,7 +92,7 @@ public sealed class NotionDatabaseProperty {
                 val name: String,
                 @SerialName("avatar_url")
                 val avatarUrl: String? = null,
-            ): Person()
+            ) : Person()
         }
     }
 
@@ -127,13 +129,13 @@ public sealed class NotionDatabaseProperty {
     public data class PhoneNumber(
         override val id: String,
         @SerialName("phone_number")
-        val phoneNumber: String? = null
+        val phoneNumber: String? = null,
     ) : NotionDatabaseProperty()
 
     @Serializable
     @SerialName("formula")
     public data class Formula(
-        override val id: String, val formula: Item
+        override val id: String, val formula: Item,
     ) : NotionDatabaseProperty() {
         @Serializable
         public sealed class Item {
@@ -195,6 +197,6 @@ public sealed class NotionDatabaseProperty {
     @Serializable
     @SerialName("rollup")
     public data class Rollup(
-        override val id: String
+        override val id: String,
     ) : NotionDatabaseProperty()
 }

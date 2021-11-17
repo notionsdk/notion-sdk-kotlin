@@ -2,8 +2,9 @@ package com.petersamokhin.notionsdk
 
 import com.petersamokhin.notionsdk.data.NotionApiVersion
 import com.petersamokhin.notionsdk.data.model.result.NotionBlock
+import com.petersamokhin.notionsdk.data.model.result.NotionDatabaseRow
 import com.petersamokhin.notionsdk.data.model.result.NotionDatabaseSchema
-import com.petersamokhin.notionsdk.data.model.result.NotionDatabase
+import com.petersamokhin.notionsdk.data.model.result.NotionResults
 import io.ktor.client.*
 import io.ktor.utils.io.core.*
 import kotlin.jvm.JvmStatic
@@ -20,7 +21,7 @@ public interface Notion : Closeable {
         databaseId: String,
         startCursor: String? = null,
         pageSize: Int? = null,
-    ): NotionDatabase
+    ): NotionResults<NotionDatabaseRow>
 
     /**
      * Notion API filter & sort params are too complicated to cover all the cases via strictly-typed models.
@@ -31,7 +32,7 @@ public interface Notion : Closeable {
     public suspend fun queryDatabase(
         databaseId: String,
         jsonRequestBody: String,
-    ): NotionDatabase
+    ): NotionResults<NotionDatabaseRow>
 
     /**
      * @see <a href="https://developers.notion.com/reference/retrieve-a-database">Notion documentation</a>
@@ -54,7 +55,7 @@ public interface Notion : Closeable {
         blockId: String,
         startCursor: String? = null,
         pageSize: Int? = null,
-    ): List<NotionBlock>
+    ): NotionResults<NotionBlock>
 
     public companion object {
         public const val HEADER_VERSION: String = "Notion-Version"
@@ -64,7 +65,7 @@ public interface Notion : Closeable {
         public fun fromToken(
             token: String,
             version: NotionApiVersion = NotionApiVersion.V_2021_08_16,
-            httpClient: HttpClient
+            httpClient: HttpClient,
         ): Notion =
             NotionImpl(token, version, httpClient)
     }

@@ -40,14 +40,14 @@ internal class NotionMarkdownExporterImpl : NotionMarkdownExporter {
         settings: NotionMarkdownExporter.Settings,
         notion: Notion,
         depthLevel: Int,
-    ): String = exportRecursively(blocks, settings, notion, depthLevel, children = false)
+    ): String = exportRecursively(blocks, settings, notion, depthLevel, depthLevel)
 
     private suspend fun exportRecursively(
         blocks: List<NotionBlock>,
         settings: NotionMarkdownExporter.Settings,
         notion: Notion,
-        depthLevel: Int,
-        children: Boolean,
+        initialDepth: Int,
+        currentDepth: Int,
     ): String {
         var resultMarkdown = ""
 
@@ -68,19 +68,20 @@ internal class NotionMarkdownExporterImpl : NotionMarkdownExporter {
                 currentBlockMarkdown = "\n$currentBlockMarkdown"
             }
 
+            val indentation = "    " * (initialDepth - currentDepth)
             lastBlockWasList = currentBlockIsList
-            resultMarkdown += currentBlockMarkdown?.let { md ->
-                ("    " * depthLevel.coerceAtMost(1)).takeIf { children }.orEmpty() + md + '\n'
-            }.orEmpty()
+            resultMarkdown += currentBlockMarkdown?.let { md -> indentation + md + '\n' }.orEmpty()
 
-            if (block.hasChildren && depthLevel > 0) {
-                val blockChildren = notion.retrieveBlockChildren(block.id)
+            if (block.hasChildren && currentDepth > 0) {
+                val blockChildren = block.getAllChildren(notion)
 
-                resultMarkdown += exportRecursively(blockChildren,
-                    settings,
-                    notion,
-                    depthLevel - 1,
-                    children = true) + '\n'
+                resultMarkdown += exportRecursively(
+                    blocks = blockChildren,
+                    settings = settings,
+                    notion = notion,
+                    initialDepth = initialDepth,
+                    currentDepth = currentDepth - 1
+                ) + '\n'
             }
         }
 
@@ -224,6 +225,18 @@ internal class NotionMarkdownExporterImpl : NotionMarkdownExporter {
         } else {
             resultMarkdown
         }
+    }
+
+    private suspend fun NotionBlock.getAllChildren(notion: Notion): List<NotionBlock> {
+        var lastResponse = notion.retrieveBlockChildren(id)
+        val result = lastResponse.results.toMutableList()
+
+        while (lastResponse.hasMore && lastResponse.nextCursor != null) {
+            lastResponse = notion.retrieveBlockChildren(id, startCursor = lastResponse.nextCursor)
+            result += lastResponse.results
+        }
+
+        return result
     }
 }
 

@@ -17,7 +17,7 @@ implementation("com.petersamokhin.notionsdk:notionsdk:$latestVersion")
 ```
 Library is published to the Maven Central repository.
 
-Latest version:  [![maven-central](https://img.shields.io/badge/Maven%20Central-0.0.3-yellowgreen?style=flat)](https://search.maven.org/search?q=g:com.petersamokhin.notionsdk)
+Latest version:  [![maven-central](https://img.shields.io/badge/Maven%20Central-0.0.4-yellowgreen?style=flat)](https://search.maven.org/search?q=g:com.petersamokhin.notionsdk)
 
 ### Supported endpoints
 - [`/databases/:id/query`](https://developers.notion.com/reference/retrieve-a-database)
@@ -39,7 +39,7 @@ val notion = Notion.fromToken(
 val schema = notion.retrieveDatabase("databaseId")
 val database = notion.queryDatabase("databaseId")
 
-val uncheckedRowSelectedOptionsIds = database.rows
+val uncheckedRowSelectedOptionsIds = database.results
     .first { row ->
         val checkboxColumnSelected = (row.columns
             .getValue("CheckboxColumn")
@@ -99,7 +99,7 @@ val notion = Notion.fromToken(
     token = "token",
     httpClient = HttpClient(CIO)
 )
-val blocks: List<NotionBlock> = notion.retrieveBlockChildren("page-id")
+val blocks: List<NotionBlock> = notion.retrieveBlockChildren("page-id").results
 
 val exporter = NotionMarkdownExporter.create()
 
