@@ -198,10 +198,10 @@ internal class NotionMarkdownExporterImpl : NotionMarkdownExporter {
             is NotionRichText.Equation -> copy(annotations = annotations.copy(strikethrough = true))
         }
 
-    private fun NotionBlock.Callout.Icon.toMarkdown(settings: NotionMarkdownExporter.Settings): String =
+    private fun NotionIcon.toMarkdown(settings: NotionMarkdownExporter.Settings): String =
         when (this) {
-            is NotionBlock.Callout.Icon.Emoji -> emoji
-            is NotionBlock.Callout.Icon.File -> {
+            is NotionIcon.Emoji -> emoji
+            is NotionIcon.File -> {
                 val resultMarkdown = "![image](${url})"
 
                 if (expiryTime != null && settings.addExpiryNoticeForInternalFiles) {

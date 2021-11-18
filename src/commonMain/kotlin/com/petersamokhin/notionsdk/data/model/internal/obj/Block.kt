@@ -365,24 +365,7 @@ internal sealed class Block {
         internal data class Value(
             val text: List<RichText>,
             val icon: Icon,
-        ) {
-            @Serializable
-            internal sealed class Icon {
-                @Serializable
-                @SerialName("emoji")
-                internal data class Emoji(
-                    val emoji: String,
-                ) : Icon()
-
-                @Serializable
-                @SerialName("file")
-                internal data class File(
-                    val url: String,
-                    @SerialName("expiry_time")
-                    val expiryTime: String? = null,
-                ) : Icon()
-            }
-        }
+        )
     }
 
     @SerialName("quote")

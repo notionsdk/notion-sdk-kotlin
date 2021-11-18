@@ -222,9 +222,3 @@ internal fun BlockFileValue.toDomain(): NotionFile =
         external != null -> NotionFile.External(url = external.url)
         else -> error("cannot map block file value: $this")
     }
-
-internal fun Block.Callout.Value.Icon.toDomain(): NotionBlock.Callout.Icon =
-    when (this) {
-        is Block.Callout.Value.Icon.Emoji -> NotionBlock.Callout.Icon.Emoji(emoji = emoji)
-        is Block.Callout.Value.Icon.File -> NotionBlock.Callout.Icon.File(url = url, expiryTime = expiryTime)
-    }

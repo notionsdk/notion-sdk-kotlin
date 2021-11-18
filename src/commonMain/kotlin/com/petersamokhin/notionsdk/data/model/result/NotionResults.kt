@@ -17,6 +17,7 @@ public data class NotionResults<T>(
 @Serializable
 public data class NotionDatabaseRow(
     val id: String,
+    val icon: NotionIcon? = null,
     val columns: Map<String, NotionDatabaseColumn>,
 )
 

@@ -17,7 +17,7 @@ implementation("com.petersamokhin.notionsdk:notionsdk:$latestVersion")
 ```
 Library is published to the Maven Central repository.
 
-Latest version:  [![maven-central](https://img.shields.io/badge/Maven%20Central-0.0.4-yellowgreen?style=flat)](https://search.maven.org/search?q=g:com.petersamokhin.notionsdk)
+Latest version:  [![maven-central](https://img.shields.io/badge/Maven%20Central-0.0.5-yellowgreen?style=flat)](https://search.maven.org/search?q=g:com.petersamokhin.notionsdk)
 
 ### Supported endpoints
 - [`/databases/:id/query`](https://developers.notion.com/reference/retrieve-a-database)

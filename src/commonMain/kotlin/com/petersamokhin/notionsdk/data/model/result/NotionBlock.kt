@@ -280,26 +280,8 @@ public sealed class NotionBlock {
         override val hasChildren: Boolean,
 
         public val text: List<NotionRichText>,
-        public val icon: Icon,
-    ) : NotionBlock() {
-
-        @Serializable
-        public sealed class Icon {
-            @Serializable
-            @SerialName("emoji")
-            public data class Emoji(
-                val emoji: String,
-            ) : Icon()
-
-            @Serializable
-            @SerialName("file")
-            public data class File(
-                val url: String,
-                @SerialName("expiry_time")
-                val expiryTime: String? = null,
-            ) : Icon()
-        }
-    }
+        public val icon: NotionIcon,
+    ) : NotionBlock()
 
     @SerialName("quote")
     @Serializable

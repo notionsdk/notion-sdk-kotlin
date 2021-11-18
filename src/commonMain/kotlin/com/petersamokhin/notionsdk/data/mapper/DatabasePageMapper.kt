@@ -7,5 +7,6 @@ import com.petersamokhin.notionsdk.data.model.result.NotionDatabaseRow
 internal fun PageObject.toDomain(): NotionDatabaseRow =
     NotionDatabaseRow(
         id = id,
+        icon = icon?.toDomain(),
         columns = properties.mapValues { (key, value) -> NotionDatabaseColumn(key, value.toDomain()) }
     )

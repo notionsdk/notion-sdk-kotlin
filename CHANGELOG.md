@@ -1,5 +1,10 @@
 # Change log
 
+Version 0.0.5 *(2021-11-18)*
+----------------------------
+* Unify Notion icon model
+* Add `icon` to the database rows
+
 Version 0.0.4 *(2021-11-16)*
 ----------------------------
 * Fix missing pagination logic for block children endpoint
